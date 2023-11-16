@@ -52,29 +52,71 @@ function file_is_an_image($temporary_path, $new_path) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $isImageValid = true; // Flag to indicate if the image is valid
+    $deleteImage = isset($_POST['delete_image']); 
 
-    // Handle file upload if a file was submitted
-    if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPLOAD_ERR_OK) {
+    $imageQuery = "SELECT filename FROM Images WHERE product_id = :product_id";
+    $imageStmt = $db->prepare($imageQuery);
+    $imageStmt->bindParam(':product_id', $product_id);
+    $imageStmt->execute();
+    $imageRow = $imageStmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($deleteImage && $imageRow) {
+        $imagePath = 'upload/' . $imageRow['filename'];
+        if (file_exists($imagePath)) {
+            unlink($imagePath);
+        }
+        
+        $removeImageQuery = "DELETE FROM Images WHERE product_id = :product_id";
+        $removeImageStmt = $db->prepare($removeImageQuery);
+        $removeImageStmt->bindParam(':product_id', $product_id);
+        $removeImageStmt->execute();
+    }
+
+    $isImageValid = true;
+    if (!$deleteImage && isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPLOAD_ERR_OK) {
         $uploadPath = "upload/";
         $temporaryPath = $_FILES['product_image']['tmp_name'];
         $newProductImage = $uploadPath . basename($_FILES['product_image']['name']);
 
-        // Use the 'file_is_an_image' function to verify the image
         if (!file_is_an_image($temporaryPath, $newProductImage)) {
             $isImageValid = false;
             echo "Error: The file is not a valid image.";
+        } else {
+            if (!file_exists($newProductImage)) {
+                move_uploaded_file($temporaryPath, $newProductImage);
+                $imageData = file_get_contents($newProductImage);
+
+                $checkImageQuery = "SELECT * FROM Images WHERE product_id = :product_id";
+                $checkImageStmt = $db->prepare($checkImageQuery);
+                $checkImageStmt->bindParam(':product_id', $product_id);
+                $checkImageStmt->execute();
+                $existingImage = $checkImageStmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($existingImage) {
+                    $updateImageQuery = "UPDATE Images SET filename = :filename, image = :image, upload_time = NOW() WHERE product_id = :product_id";
+                    $updateImageStmt = $db->prepare($updateImageQuery);
+                } else {
+                    $updateImageQuery = "INSERT INTO Images (product_id, filename, image, upload_time) VALUES (:product_id, :filename, :image, NOW())";
+                    $updateImageStmt = $db->prepare($updateImageQuery);
+                }
+
+                $updateImageStmt->bindParam(':product_id', $product_id);
+                $updateImageStmt->bindParam(':filename', $_FILES['product_image']['name']);
+                $updateImageStmt->bindParam(':image', $imageData, PDO::PARAM_LOB);
+                $updateImageStmt->execute();
+            } else {
+                echo $_FILES['product_image']['name'] . " already exists.";
+            }
         }
     }
 
     if ($isImageValid) {
         $productName = $_POST['product_name'];
-        $productDescription = $_POST['product_description']; 
+        $productDescription = $_POST['product_description'];
         $productPrice = $_POST['product_price'];
         $stockQuantity = $_POST['stock_quantity'];
         $categoryID = $_POST['category_id'];
 
-        // Update product details in the Products table
         $updateProductQuery = "UPDATE Products SET product_name = :product_name, product_description = :product_description, product_price = :product_price, stock_quantity = :stock_quantity, category_id = :category_id WHERE product_id = :product_id";
         $updateProductStmt = $db->prepare($updateProductQuery);
         $updateProductStmt->bindParam(':product_name', $productName);
@@ -84,46 +126,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $updateProductStmt->bindParam(':category_id', $categoryID);
         $updateProductStmt->bindParam(':product_id', $product_id);
 
-        // Execute the product update statement
         if ($updateProductStmt->execute()) {
-            // Handle file upload if the file is a valid image
-            if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPLOAD_ERR_OK) {
-                if (!file_exists($newProductImage)) {
-                    move_uploaded_file($temporaryPath, $newProductImage);
-                    $imageData = file_get_contents($newProductImage);
-
-                    // Check if an image already exists for this product
-                    $checkImageQuery = "SELECT * FROM Images WHERE product_id = :product_id";
-                    $checkImageStmt = $db->prepare($checkImageQuery);
-                    $checkImageStmt->bindParam(':product_id', $product_id);
-                    $checkImageStmt->execute();
-                    $existingImage = $checkImageStmt->fetch(PDO::FETCH_ASSOC);
-
-                    if ($existingImage) {
-                        // Update the existing image
-                        $updateImageQuery = "UPDATE Images SET filename = :filename, image = :image, upload_time = NOW() WHERE product_id = :product_id";
-                        $updateImageStmt = $db->prepare($updateImageQuery);
-                    } else {
-                        // Insert new image
-                        $updateImageQuery = "INSERT INTO Images (product_id, filename, image, upload_time) VALUES (:product_id, :filename, :image, NOW())";
-                        $updateImageStmt = $db->prepare($updateImageQuery);
-                    }
-                    $updateImageStmt->bindParam(':product_id', $product_id);
-                    $updateImageStmt->bindParam(':filename', $_FILES['product_image']['name']);
-                    $updateImageStmt->bindParam(':image', $imageData, PDO::PARAM_LOB);
-                    $updateImageStmt->execute();
-                } else {
-                    echo $_FILES['product_image']['name'] . " already exists.";
-                }
-            }
-
             header('Location: admin.php');
             exit();
         } else {
-            echo "Product edition failed.";
+            echo "Product update failed.";
         }
     }
 }
+
+
 ?>
 
 
@@ -152,6 +164,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <input type="number" name="stock_quantity" value="<?php echo htmlspecialchars($stock_quantity); ?>" required><br>
 
         <label for="product_image">Product Image:</label>
+        <?php
+            $imageQuery = "SELECT filename FROM Images WHERE product_id = :product_id";
+            $imageStmt = $db->prepare($imageQuery);
+            $imageStmt->bindParam(':product_id', $product_id);
+            $imageStmt->execute();
+            $imageRow = $imageStmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($imageRow) {
+                echo '<img src="upload/' . htmlspecialchars($imageRow['filename']) . '" alt="Current Product Image" width="100"><br>';
+                echo 'If you do not select a new file, the current image will remain.<br>';
+                echo '<input type="checkbox" name="delete_image" id="delete_image"> <label for="delete_image">Delete current image</label><br>';
+
+            }
+        ?>
         <input type="file" name="product_image" id="product_image"><br>
 
         <label for="category_id">Category ID:</label>
