@@ -21,8 +21,8 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php
     foreach ($products as $product) {
         echo "<a href='detail.php?id=" . htmlspecialchars($product['product_id']) . "'>" . htmlspecialchars($product['product_name']) . "</a><br>";
-        if ($product['filename']) {
-            echo "<img src='upload/" . htmlspecialchars($product['filename']) . "' alt='" . htmlspecialchars($product['product_name']) . "' style='width:100px; height:auto;'><br><br>";
+        if (!empty($product['filename'])) {
+            echo "<img src='upload/" . htmlspecialchars($product['filename']) . "' alt='" . htmlspecialchars($product['product_name']) . "' class='product-image'><br><br>";
         }
     }
     require('footer.php');
