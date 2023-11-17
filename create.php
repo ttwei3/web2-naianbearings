@@ -10,9 +10,9 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-ini_set('display_errors', 1);
+/* ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+error_reporting(E_ALL); */
 
 // Function to check if the file is an image
 function file_is_an_image($temporary_path, $new_path) {
@@ -28,9 +28,13 @@ function file_is_an_image($temporary_path, $new_path) {
     return $file_extension_is_valid && $mime_type_is_valid;
 }
 
-// Check if the form was submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $isImageValid = true; // Flag to indicate if the image is valid
+if (!$isImageValid && $_SERVER["REQUEST_METHOD"] == "POST") {
+    $_SESSION['product_name'] = $_POST['product_name'];
+    $_SESSION['product_description'] = $_POST['product_description'];
+    $_SESSION['product_price'] = $_POST['product_price'];
+    $_SESSION['stock_quantity'] = $_POST['stock_quantity'];
+    $_SESSION['category_id'] = $_POST['category_id'];
+    $isImageValid = true; 
 
     // Handle file upload if a file was submitted
     if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPLOAD_ERR_OK) {
@@ -41,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Use the 'file_is_an_image' function to verify the image
         if (!file_is_an_image($temporaryPath, $newProductImage)) {
             $isImageValid = false;
-            echo "Error: The file is not a valid image.";
+            echo "The file is not a valid image.";
         }
     }
 
@@ -105,23 +109,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <h2>Create New Product</h2>
     <form method="POST" action="create.php" enctype="multipart/form-data">
         <label for="product_name">Product Name:</label><br>
-        <input type="text" id="product_name" name="product_name" required><br>
+        <input type="text" id="product_name" name="product_name" required value="<?php echo isset($_SESSION['product_name']) ? $_SESSION['product_name'] : ''; ?>"><br>
 
         <label for="product_description">Product Description:</label><br>
-        <div id="editor-container"></div>
+        <div id="editor-container"><?php echo isset($_SESSION['product_description']) ? $_SESSION['product_description'] : ''; ?></div>
         <input type="hidden" name="product_description" id="product_description">
 
         <label for="product_price">Product Price:</label><br>
-        <input type="number" id="product_price" name="product_price" step="0.01" required><br>
+        <input type="number" id="product_price" name="product_price" step="0.01" required value="<?php echo isset($_SESSION['product_price']) ? $_SESSION['product_price'] : ''; ?>"><br>
         
         <label for="product_image">Product Image:</label><br>
         <input type="file" id="product_image" name="product_image"><br>
 
         <label for="stock_quantity">Stock Quantity:</label><br>
-        <input type="number" id="stock_quantity" name="stock_quantity" required><br>
+        <input type="number" id="stock_quantity" name="stock_quantity" required value="<?php echo isset($_SESSION['stock_quantity']) ? $_SESSION['stock_quantity'] : ''; ?>"><br>
 
         <label for="category_id">Category ID:</label><br>
-        <input type="number" id="category_id" name="category_id" required><br>
+        <input type="number" id="category_id" name="category_id" required value="<?php echo isset($_SESSION['category_id']) ? $_SESSION['category_id'] : ''; ?>"><br>
 
         <input type="submit" value="Create Product">
         <script>
@@ -133,6 +137,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 var product_description = document.querySelector('input[name=product_description]');
                 product_description.value = quill.root.innerHTML;
             };
+            <?php if (isset($_SESSION['product_description'])): ?>
+            quill.root.innerHTML = '<?php echo str_replace("\n", "\\n", addslashes($_SESSION['product_description'])); ?>';
+            <?php endif; ?>
         </script>
     </form>
 </body>
