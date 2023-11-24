@@ -14,7 +14,7 @@ unset($_SESSION['error']); // 清除错误消息
 // 处理评论提交
 if (isset($_POST['submit_comment'])) {
 
-    $comment_name = $_POST['comment_name'];
+    $comment_name = empty($_POST['comment_name']) ? 'Anonymous User' : $_POST['comment_name'];
     $comment_text = $_POST['comment_text'];
 
     // 验证验证码
@@ -83,7 +83,7 @@ $product = $stmt->fetch(PDO::FETCH_ASSOC);
         <h2>Comment Area</h2>
         <form method="post" action="">
             <label for="comment_name">Name:</label>
-            <input type="text" id="comment_name" name="comment_name" required value="<?php echo !empty($error) && isset($_SESSION['saved_input']['comment_name']) ? htmlspecialchars($_SESSION['saved_input']['comment_name']) : ''; ?>">
+            <input type="text" id="comment_name" name="comment_name" value="<?php echo !empty($error) && isset($_SESSION['saved_input']['comment_name']) ? htmlspecialchars($_SESSION['saved_input']['comment_name']) : ''; ?>">
 
             <label for="comment_text">Comment:</label>
             <textarea id="comment_text" name="comment_text" required><?php echo !empty($error) && isset($_SESSION['saved_input']['comment_text']) ? htmlspecialchars($_SESSION['saved_input']['comment_text']) : ''; ?></textarea>
