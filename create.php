@@ -139,9 +139,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <label for="stock_quantity">Stock Quantity:</label><br>
         <input type="number" id="stock_quantity" name="stock_quantity" required value="<?php echo isset($_SESSION['stock_quantity']) ? $_SESSION['stock_quantity'] : ''; ?>"><br>
 
-        <label for="category_id">Category ID:</label><br>
-        <input type="number" id="category_id" name="category_id" required value="<?php echo isset($_SESSION['category_id']) ? $_SESSION['category_id'] : ''; ?>"><br>
-
         <label for="category_id">Category:</label>
         <select name="category_id" id="category_id">
             <?php foreach ($categories as $category): ?>
