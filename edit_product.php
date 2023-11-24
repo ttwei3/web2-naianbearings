@@ -16,6 +16,11 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+$categoryQuery = "SELECT category_id, category_name FROM categories";
+$categoryStmt = $db->prepare($categoryQuery);
+$categoryStmt->execute();
+$categories = $categoryStmt->fetchAll(PDO::FETCH_ASSOC);
+
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     header('Location: admin.php');
     exit();
@@ -65,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (file_exists($imagePath)) {
             unlink($imagePath);
         }
-        
+
         $removeImageQuery = "DELETE FROM Images WHERE product_id = :product_id";
         $removeImageStmt = $db->prepare($removeImageQuery);
         $removeImageStmt->bindParam(':product_id', $product_id);
@@ -80,7 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (!file_is_an_image($temporaryPath, $newProductImage)) {
             $isImageValid = false;
-            echo "Error: The file is not a valid image.";
+            echo "The file is not a valid image.";
         } else {
             if (!file_exists($newProductImage)) {
                 move_uploaded_file($temporaryPath, $newProductImage);
@@ -180,8 +185,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         ?>
         <input type="file" name="product_image" id="product_image"><br>
 
-        <label for="category_id">Category ID:</label>
-        <input type="number" name="category_id" value="<?php echo htmlspecialchars($category_id); ?>" required><br>
+        <label for="category_id">Category:</label>
+        <select name="category_id" id="category_id">
+            <?php foreach ($categories as $category): ?>
+                <option value="<?php echo htmlspecialchars($category['category_id']); ?>" <?php if ($category['category_id'] == $product['category_id']) echo 'selected'; ?>>
+                    <?php echo htmlspecialchars($category['category_name']); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <br>
 
         <input type="submit" value="Update Product">
     </form>
