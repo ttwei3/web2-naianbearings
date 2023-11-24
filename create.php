@@ -14,6 +14,11 @@ if (!isset($_SESSION['user_id'])) {
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL); */
 
+$categoryQuery = "SELECT category_id, category_name FROM categories";
+$categoryStmt = $db->prepare($categoryQuery);
+$categoryStmt->execute();
+$categories = $categoryStmt->fetchAll(PDO::FETCH_ASSOC);
+
 // Function to check if the file is an image
 function file_is_an_image($temporary_path, $new_path) {
     $allowed_mime_types      = ['image/gif', 'image/jpeg', 'image/png'];
@@ -28,13 +33,15 @@ function file_is_an_image($temporary_path, $new_path) {
     return $file_extension_is_valid && $mime_type_is_valid;
 }
 
-if (!$isImageValid && $_SERVER["REQUEST_METHOD"] == "POST") {
+$isImageValid = true; 
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $_SESSION['product_name'] = $_POST['product_name'];
     $_SESSION['product_description'] = $_POST['product_description'];
     $_SESSION['product_price'] = $_POST['product_price'];
     $_SESSION['stock_quantity'] = $_POST['stock_quantity'];
     $_SESSION['category_id'] = $_POST['category_id'];
-    $isImageValid = true; 
+
 
     // Handle file upload if a file was submitted
     if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPLOAD_ERR_OK) {
@@ -88,6 +95,14 @@ if (!$isImageValid && $_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
 
+            // 清除会话变量
+            unset($_SESSION['product_name']);
+            unset($_SESSION['product_description']);
+            unset($_SESSION['product_price']);
+            unset($_SESSION['stock_quantity']);
+            unset($_SESSION['category_id']);
+
+            // 重定向到 admin.php
             header('Location: admin.php');
             exit();
         } else {
@@ -126,6 +141,16 @@ if (!$isImageValid && $_SERVER["REQUEST_METHOD"] == "POST") {
 
         <label for="category_id">Category ID:</label><br>
         <input type="number" id="category_id" name="category_id" required value="<?php echo isset($_SESSION['category_id']) ? $_SESSION['category_id'] : ''; ?>"><br>
+
+        <label for="category_id">Category:</label>
+        <select name="category_id" id="category_id">
+            <?php foreach ($categories as $category): ?>
+                <option value="<?php echo htmlspecialchars($category['category_id']); ?>" <?php if ($category['category_id'] == $product['category_id']) echo 'selected'; ?>>
+                    <?php echo htmlspecialchars($category['category_name']); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <br>
 
         <input type="submit" value="Create Product">
         <script>
