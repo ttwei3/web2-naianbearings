@@ -6,6 +6,14 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+if (isset($_GET['error'])) {
+    if ($_GET['error'] == 'incorrectpassword') {
+        echo '<p>Incorrect password</p>';
+    } elseif ($_GET['error'] == 'usernotfound') {
+        echo '<p>User does not exist.</p>';
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
@@ -36,12 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
         } else {
             // Password is incorrect
-            header('Location: login.html?error=incorrectpassword');
+            header('Location: login.php?error=incorrectpassword');
             exit();
         }
     } else {
         // User not found
-        header('Location: login.html?error=usernotfound');
+        header('Location: login.php?error=usernotfound');
         exit();
     }
 }
