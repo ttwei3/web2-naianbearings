@@ -24,8 +24,10 @@
                 <?php endif; ?>
             </div>
             <div class="search-bar">
-                <input type="text" placeholder="Search our product">
-                <button>Search</button>
+                <form action="search.php" method="get">
+                    <input type="text" name="search_keyword" placeholder="Search our product">
+                    <button type="submit">Search</button>
+                </form>
             </div>
         </div>
         <nav>
