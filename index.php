@@ -1,6 +1,11 @@
 <!-- index.php-->
 <?php
     session_start();
+    require('connect.php'); 
+
+$categoryQuery = "SELECT category_id, category_name FROM categories";
+$categoryStmt = $db->query($categoryQuery);
+$categories = $categoryStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -25,7 +30,16 @@
             </div>
             <div class="search-bar">
                 <form action="search.php" method="get">
-                    <input type="text" name="search_keyword" placeholder="Search our product">
+                    <input type="text" name="search_keyword" placeholder="Search our product" value="<?php echo htmlspecialchars($search_keyword); ?>">
+                    <select name="category">
+                        <option value="all" <?php echo ($category_selected == 'all' ? 'selected' : ''); ?>>All Categories</option>
+                        <?php foreach ($categories as $category): ?>
+                            <option value="<?php echo $category['category_id']; ?>" 
+                                    <?php echo ($category_selected == $category['category_id'] ? 'selected' : ''); ?>>
+                                <?php echo htmlspecialchars($category['category_name']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                     <button type="submit">Search</button>
                 </form>
             </div>
