@@ -71,21 +71,15 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Manage Categories</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
-</head>
-<body>
+
     <h1>Manage Categories</h1>
     <h3>Create Categories</h3>
     <form method="post" action="manage_categories.php">
         <input type="hidden" name="category_id" value="">
-        <label for="category_name">Category Name:</label>
-        <input type="text" name="category_name" required><br>
-        <label for="category_description">Description:</label>
-        <textarea name="category_description"></textarea><br>
+        <label for="category_name_create">Category Name:</label>
+        <input type="text" id="category_name_create" name="category_name" required><br>
+        <label for="category_description_create">Description:</label>
+        <textarea id="category_description_create" name="category_description"></textarea><br>
         <input type="submit" name="submit_category" value="Create">
     </form>
     <h3>Existing Categories</h3>
@@ -93,10 +87,10 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div>
             <form method="post" action="manage_categories.php">
                 <input type="hidden" name="category_id" value="<?php echo htmlspecialchars($category['category_id']); ?>">
-                <label for="category_name">Name:</label>
-                <input type="text" name="category_name" value="<?php echo htmlspecialchars($category['category_name']); ?>" required><br>
-                <label for="category_description">Description:</label>
-                <textarea name="category_description"><?php echo htmlspecialchars($category['category_description']); ?></textarea><br>
+                <label for="category_name_<?php echo $category['category_id']; ?>">Name:</label>
+                <input type="text" id="category_name_<?php echo $category['category_id']; ?>" name="category_name" value="<?php echo htmlspecialchars($category['category_name']); ?>" required><br>
+                <label for="category_description_<?php echo $category['category_id']; ?>">Description:</label>
+                <textarea id="category_description_<?php echo $category['category_id']; ?>" name="category_description"><?php echo htmlspecialchars($category['category_description']); ?></textarea><br>
                 <input type="submit" name="submit_category" value="Update">
                 <input type="submit" name="delete_category" value="Delete" onclick="return confirm('Are you sure you want to delete this category?');">
             </form>

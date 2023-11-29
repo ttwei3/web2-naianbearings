@@ -1,7 +1,6 @@
 <!-- product_detail.php-->
 <?php
 require('connect.php');
-require('header_admin.php');
 session_start();
 
 ini_set('display_errors', 1);
@@ -46,12 +45,37 @@ if (isset($_GET['id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Details</title>
+    <link rel="icon" href="./images/page-logo.svg" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
+<header>
+    <div class="top-header2">
+    <div class="login-info2">
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <a href="logout.php">Log out</a>
+            <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin']): ?>
+                <p>Welcome!</p>
+            <?php endif; ?>
+        <?php else: ?>
+            <a href="login.php">Log in</a>
+        <?php endif; ?>
+    </div>
+    </div>
+    <nav>
+        <ul class="main-nav">
+            <li><a href="index.php">Home</a></li>
+            <li><a href="admin.php">DashBoard</a></li>
+            <li><a href="manage_categories.php">Categories Management</a></li>
+            <li><a href="manage_products.php">Products Management</a></li>
+            <li><a href="manage_comments.php">Comments Management</a></li>
+        </ul>
+    </nav>
+</header>
     <h1>Product Details</h1>
     <div class="product">
         <h3><?php echo htmlspecialchars($product['product_name'] ?? 'N/A'); ?></h3>
-        <p><strong>Description:</strong> <?php echo $product['product_description'] ?? 'No description'; ?></p>
+        <p><strong>Description:</strong> <?php echo strip_tags($product['product_description']) ?? 'No description'; ?></p>
         <p><strong>Price:</strong> $<?php echo htmlspecialchars($product['product_price'] ?? '0'); ?></p>
         <p><strong>Stock Quantity:</strong> <?php echo htmlspecialchars($product['stock_quantity'] ?? '0'); ?></p>
         <p><strong>Category ID:</strong> <?php echo htmlspecialchars($product['category_id'] ?? 'N/A'); ?></p>

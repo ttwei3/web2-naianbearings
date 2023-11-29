@@ -1,18 +1,20 @@
 <!-- index.php-->
 <?php
     session_start();
-    require('connect.php'); 
+    require('connect.php'); // 确保这里正确地引入了数据库连接文件
 
+// 获取所有可用类别
 $categoryQuery = "SELECT category_id, category_name FROM categories";
 $categoryStmt = $db->query($categoryQuery);
 $categories = $categoryStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Your Website</title>
+    <title>Naian Bearing</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="icon" href="./images/page-logo.svg" type="image/x-icon">
 </head>
 <body>
     <header>
@@ -63,7 +65,7 @@ $categories = $categoryStmt->fetchAll(PDO::FETCH_ASSOC);
     </main>
 
     <footer>
-        <img src="" alt="" id="footerlogo">
+        <img src="images/logo.svg" alt="fail" id="footerlogo">
         <div class="footer-content">
             <div class="footer-nav">
                 <ul>

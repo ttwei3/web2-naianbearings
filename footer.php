@@ -1,6 +1,6 @@
 <!-- footer.php -->
 <footer>
-    <img src="" alt="" id="footerlogo">
+    <img src="images/logo.svg" alt="fail" id="footerlogo">
     <div class="footer-content">
         <div class="footer-nav">
             <ul>

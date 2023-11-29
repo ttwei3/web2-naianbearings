@@ -3,7 +3,6 @@
 
 
 require('connect.php');
-require('header_admin.php');
 
 session_start();
 
@@ -151,22 +150,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <title>Edit Product</title>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="icon" href="./images/page-logo.svg" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
+<header>
+    <div class="top-header2">
+    <div class="login-info2">
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <a href="logout.php">Log out</a>
+            <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin']): ?>
+                <p>Welcome!</p>
+            <?php endif; ?>
+        <?php else: ?>
+            <a href="login.php">Log in</a>
+        <?php endif; ?>
+    </div>
+    </div>
+    <nav>
+        <ul class="main-nav">
+            <li><a href="index.php">Home</a></li>
+            <li><a href="admin.php">DashBoard</a></li>
+            <li><a href="manage_categories.php">Categories Management</a></li>
+            <li><a href="manage_products.php">Products Management</a></li>
+            <li><a href="manage_comments.php">Comments Management</a></li>
+        </ul>
+    </nav>
+</header>
     <h1>Edit Product</h1>
     <form action="edit_product.php?id=<?php echo htmlspecialchars($product_id); ?>" method="post" enctype="multipart/form-data">
         <label for="product_name">Name:</label>
-        <input type="text" name="product_name" value="<?php echo htmlspecialchars($product_name); ?>" required><br>
+        <input type="text" id="product_name" name="product_name" value="<?php echo htmlspecialchars($product_name); ?>" required><br>
 
         <label for="product_description">Description:</label>
         <div id="editor-container"><?php echo htmlspecialchars($product_description); ?></div>
         <textarea name="product_description" id="product_description" style="display:none;"></textarea><br>
 
         <label for="product_price">Price:</label>
-        <input type="text" name="product_price" value="<?php echo htmlspecialchars($product_price); ?>" required><br>
+        <input type="text" name="product_price" id="product_price" value="<?php echo htmlspecialchars($product_price); ?>" required><br>
 
         <label for="stock_quantity">Stock:</label>
-        <input type="number" name="stock_quantity" value="<?php echo htmlspecialchars($stock_quantity); ?>" required><br>
+        <input type="number" name="stock_quantity" id="stock_quantity" value="<?php echo htmlspecialchars($stock_quantity); ?>" required><br>
 
         <label for="product_image">Product Image:</label>
         <?php

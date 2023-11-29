@@ -57,21 +57,11 @@ $stmt->execute();
 $product = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Details</title>
-    
 
-</head>
-<body>
     <?php if ($product): ?>
         <!-- 产品详情 -->
         <h2><?php echo htmlspecialchars($product['product_name']); ?></h2>
-        <p><strong>Description:</strong> <?php echo $product['product_description'] ?? 'No description'; ?></p>
+        <p><strong>Description:</strong> <?php echo strip_tags($product['product_description']) ?? 'No description'; ?></p>
         <p><strong>Price: </strong>$<?php echo htmlspecialchars($product['product_price']); ?></p>
         <p><strong>Stock Quantity: </strong><?php echo htmlspecialchars($product['stock_quantity']); ?></p>
         <p><strong>Category ID: </strong><?php echo htmlspecialchars($product['category_id']); ?></p>
@@ -81,7 +71,7 @@ $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
         <!-- 评论表单 -->
         <h2>Comment Area</h2>
-        <form method="post" action="">
+        <form method="post" action="detail.php">
             <label for="comment_name">Name:</label>
             <input type="text" id="comment_name" name="comment_name" value="<?php echo !empty($error) && isset($_SESSION['saved_input']['comment_name']) ? htmlspecialchars($_SESSION['saved_input']['comment_name']) : ''; ?>">
 

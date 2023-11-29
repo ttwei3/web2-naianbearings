@@ -1,17 +1,18 @@
 <!-- header.php-->
 <?php
     session_start();
-    require('connect.php'); 
+    require('connect.php'); // 确保这里正确地引入了数据库连接文件
 
+// 获取所有可用类别
 $categoryQuery = "SELECT category_id, category_name FROM categories";
 $categoryStmt = $db->query($categoryQuery);
 $categories = $categoryStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Your Website</title>
+    <title>Naian Bearing</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
@@ -52,5 +53,3 @@ $categories = $categoryStmt->fetchAll(PDO::FETCH_ASSOC);
             </ul>
         </nav>
     </header>
-</body>
-</html>

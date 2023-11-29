@@ -2,7 +2,6 @@
 <?php
 
 require('connect.php');
-require('header_admin.php');
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
@@ -119,16 +118,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Create Product</title>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <link rel="icon" href="./images/page-logo.svg" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
+<header>
+    <div class="top-header2">
+    <div class="login-info2">
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <a href="logout.php">Log out</a>
+            <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin']): ?>
+                <p>Welcome!</p>
+            <?php endif; ?>
+        <?php else: ?>
+            <a href="login.php">Log in</a>
+        <?php endif; ?>
+    </div>
+    </div>
+    <nav>
+        <ul class="main-nav">
+            <li><a href="index.php">Home</a></li>
+            <li><a href="admin.php">DashBoard</a></li>
+            <li><a href="manage_categories.php">Categories Management</a></li>
+            <li><a href="manage_products.php">Products Management</a></li>
+            <li><a href="manage_comments.php">Comments Management</a></li>
+        </ul>
+    </nav>
+</header>
     <h2>Create New Product</h2>
     <form method="POST" action="create.php" enctype="multipart/form-data">
         <label for="product_name">Product Name:</label><br>
         <input type="text" id="product_name" name="product_name" required value="<?php echo isset($_SESSION['product_name']) ? $_SESSION['product_name'] : ''; ?>"><br>
 
-        <label for="product_description">Product Description:</label><br>
-        <div id="editor-container"><?php echo isset($_SESSION['product_description']) ? $_SESSION['product_description'] : ''; ?></div>
-        <input type="hidden" name="product_description" id="product_description">
+        <label for="editor-textarea">Product Description:</label><br>
+        <div id="editor-container"></div>
+        <textarea name="product_description" id="editor-textarea" style="display:none;"></textarea><br>
 
         <label for="product_price">Product Price:</label><br>
         <input type="number" id="product_price" name="product_price" step="0.01" required value="<?php echo isset($_SESSION['product_price']) ? $_SESSION['product_price'] : ''; ?>"><br>
@@ -150,17 +174,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <br>
 
         <input type="submit" value="Create Product">
+        <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
         <script>
             var quill = new Quill('#editor-container', {
                 theme: 'snow'
             });
             var form = document.querySelector('form');
             form.onsubmit = function() {
-                var product_description = document.querySelector('input[name=product_description]');
+                var product_description = document.querySelector('#editor-textarea');
                 product_description.value = quill.root.innerHTML;
             };
             <?php if (isset($_SESSION['product_description'])): ?>
-            quill.root.innerHTML = '<?php echo str_replace("\n", "\\n", addslashes($_SESSION['product_description'])); ?>';
+                quill.root.innerHTML = '<?php echo str_replace("\n", "\\n", addslashes($_SESSION['product_description'])); ?>';
             <?php endif; ?>
         </script>
     </form>

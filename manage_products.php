@@ -34,13 +34,7 @@ $stmt->execute();
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Manage Products</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
-</head>
-<body>
+
     <h1>Manage Products</h1>
     <form action="manage_products.php" method="post">
         <label for="sort_by">Sort products by:</label>

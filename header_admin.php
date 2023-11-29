@@ -3,7 +3,7 @@
     session_start(); 
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Your Website</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
@@ -21,7 +21,6 @@
             <a href="login.php">Log in</a>
         <?php endif; ?>
     </div>
-        </div>
     </div>
     <nav>
         <ul class="main-nav">

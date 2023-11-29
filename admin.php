@@ -28,13 +28,6 @@ $categoryCount = $categoryCountStmt->fetchColumn();
 
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Admin</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
-</head>
-<body>
     <h1>Dashboard</h1>
     <table>
         <tr>
@@ -51,5 +44,4 @@ $categoryCount = $categoryCountStmt->fetchColumn();
         </tr>
     </table>
 </body>
-
 </html>

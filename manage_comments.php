@@ -121,13 +121,7 @@ if (isset($_POST['restore_comment_id'])) {
 }
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Manage Comments</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
-</head>
-<body>
+
     <h1>Manage Comments</h1>
 
     <form action="manage_comments.php" method="post">
