@@ -1,7 +1,7 @@
-<!-- login.php-->
 <?php
-require('connect.php');
+require('connect.php'); 
 session_start();
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -25,15 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user) {
-        // Verify the password
         $hashedPassword = $user['user_password'];
         if (password_verify($password, $hashedPassword)) {
-            // Password is correct
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['username'] = $username;
-            // Check if the user is an admin
-            $_SESSION['is_admin'] = $user['role'] == 'admin'; // Replace 'role' with the actual column name for user roles in your database
-    
+            $_SESSION['is_admin'] = $user['role'] == 'admin'; 
+
+            $_SESSION['success_message'] = "Login successful! Welcome back, {$username}!";
+
             if ($_SESSION['is_admin']) {
                 header('Location: admin.php');
                 exit();
@@ -41,19 +40,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 header('Location: index.php');
                 exit();
             }
-            
         } else {
-            // Password is incorrect
             header('Location: login.php?error=incorrectpassword');
             exit();
         }
     } else {
-        // User not found
         header('Location: login.php?error=usernotfound');
         exit();
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -4,6 +4,11 @@ require('connect.php');
 require('header_admin.php');
 session_start();
 
+if (isset($_SESSION['success_message'])) {
+    echo '<p class="success-message">' . $_SESSION['success_message'] . '</p>';
+    unset($_SESSION['success_message']); 
+}
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL); 
