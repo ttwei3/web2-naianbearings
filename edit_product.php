@@ -3,8 +3,8 @@
 
 
 require('connect.php');
-require '/Applications/xampp/htdocs/a/php-image-resize-master/lib/ImageResize.php';
-require '/Applications/xampp/htdocs/a/php-image-resize-master/lib/ImageResizeException.php';
+require '/Applications/xampp/htdocs/web2/project-final/lib/ImageResize.php';
+require '/Applications/xampp/htdocs/web2/project-final/lib/ImageResizeException.php';
 
 session_start();
 
