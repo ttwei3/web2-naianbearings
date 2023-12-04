@@ -7,23 +7,19 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// 检查是否为管理员
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
     header('Location: index.php');
     exit();
 }
 
-// 处理类别表单提交
 if (isset($_POST['submit_category'])) {
     $categoryId = $_POST['category_id'] ?? null;
     $categoryName = $_POST['category_name'];
     $categoryDescription = $_POST['category_description'] ?? '';
 
     if ($categoryId) {
-        // 更新现有类别
         $query = "UPDATE categories SET category_name = :category_name, category_description = :category_description WHERE category_id = :category_id";
     } else {
-        // 创建新类别
         $query = "INSERT INTO categories (category_name, category_description) VALUES (:category_name, :category_description)";
     }
 
@@ -35,35 +31,29 @@ if (isset($_POST['submit_category'])) {
     }
     $stmt->execute();
 
-    // 重定向回管理页面
     header('Location: manage_categories.php');
     exit();
 }
 
-// 删除按钮点击后的处理代码
 if (isset($_POST['delete_category'])) {
     $categoryId = $_POST['category_id'] ?? null;
 
     if ($categoryId) {
-        // 删除指定的类别
         $deleteQuery = "DELETE FROM categories WHERE category_id = :category_id";
         $deleteStmt = $db->prepare($deleteQuery);
         $deleteStmt->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
-        $result = $deleteStmt->execute(); // 执行删除查询
+        $result = $deleteStmt->execute(); 
 
         if ($result) {
-            // 删除成功
             header('Location: manage_categories.php');
             exit();
         } else {
-            // 删除失败，输出错误信息以进行调试
             echo "Failed to delete category. Error: " . implode(", ", $deleteStmt->errorInfo());
             exit();
         }
     }
 }
 
-// 获取现有类别
 $query = "SELECT category_id, category_name, category_description FROM categories";
 $stmt = $db->prepare($query);
 $stmt->execute();

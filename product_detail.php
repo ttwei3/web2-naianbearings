@@ -75,7 +75,7 @@ if (isset($_GET['id'])) {
     <h1>Product Details</h1>
     <div class="product">
         <h3><?php echo htmlspecialchars($product['product_name'] ?? 'N/A'); ?></h3>
-        <p><strong>Description:</strong> <?php echo strip_tags($product['product_description']) ?? 'No description'; ?></p>
+        <p><strong>Description:</strong> <?php echo $product['product_description'] ?? 'No description'; ?>
         <p><strong>Price:</strong> $<?php echo htmlspecialchars($product['product_price'] ?? '0'); ?></p>
         <p><strong>Stock Quantity:</strong> <?php echo htmlspecialchars($product['stock_quantity'] ?? '0'); ?></p>
         <p><strong>Category ID:</strong> <?php echo htmlspecialchars($product['category_id'] ?? 'N/A'); ?></p>

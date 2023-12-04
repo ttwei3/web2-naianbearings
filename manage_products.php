@@ -14,8 +14,8 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['is_admin']) || !$_SESSION[
 }
 
 // Default sort settings
-$orderBy = 'product_name'; // Default sort column
-$orderDirection = 'ASC'; // Default sort direction
+$orderBy = 'product_name'; 
+$orderDirection = 'ASC'; 
 
 // Check for requested sort column and direction from dropdown
 if (isset($_POST['sort_by']) && in_array($_POST['sort_by'], ['product_name', 'product_price', 'stock_quantity'])) {
