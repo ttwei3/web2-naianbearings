@@ -7,6 +7,7 @@
 <head>
     <title>Your Website</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="icon" href="./images/page-logo.svg" type="image/x-icon">
 </head>
 <body>
 <header>

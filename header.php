@@ -14,6 +14,7 @@ $categories = $categoryStmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <title>Naian Bearing</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="icon" href="./images/page-logo.svg" type="image/x-icon">
 </head>
 <body>
     <header>
@@ -49,7 +50,6 @@ $categories = $categoryStmt->fetchAll(PDO::FETCH_ASSOC);
             <ul class="main-nav">
                 <li><a href="index.php">Home</a></li>
                 <li><a href="product.php">Products</a></li>
-                <li><a href="#">Support</a></li>
             </ul>
         </nav>
     </header>
