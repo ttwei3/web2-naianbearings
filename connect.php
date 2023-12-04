@@ -1,8 +1,8 @@
  <!-- connect.php-->
  <?php
-     define('DB_DSN','mysql:host=localhost;dbname=project;charset=utf8');
-     define('DB_USER','tingting');
-     define('DB_PASS','tt219219');     
+     define('DB_DSN','mysql:host=localhost;dbname=project-final;charset=utf8');
+     define('DB_USER','root');
+     define('DB_PASS','');     
      
     //  PDO is PHP Data Objects
     //  mysqli <-- BAD. 
