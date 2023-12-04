@@ -94,7 +94,6 @@
                     <li>Copyright © 2006&nbsp;<a href="#"> Naian Bearing</a></li>
                     <li><a href="index.php">Home</a></li>
                     <li><a href="product.php">Products</a></li>
-                    <li><a href="support.php">Support</a></li>
                 </ul>
             </div>
             <div class="footer-under">
