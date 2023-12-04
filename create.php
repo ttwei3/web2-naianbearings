@@ -2,6 +2,9 @@
 <?php
 
 require('connect.php');
+require '/Applications/xampp/htdocs/a/php-image-resize-master/lib/ImageResize.php';
+require '/Applications/xampp/htdocs/a/php-image-resize-master/lib/ImageResizeException.php';
+
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
@@ -11,14 +14,13 @@ if (!isset($_SESSION['user_id'])) {
 
 /* ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-error_reporting(E_ALL); */
-
+error_reporting(E_ALL);
+ */
 $categoryQuery = "SELECT category_id, category_name FROM categories";
 $categoryStmt = $db->prepare($categoryQuery);
 $categoryStmt->execute();
 $categories = $categoryStmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Function to check if the file is an image
 function file_is_an_image($temporary_path, $new_path) {
     $allowed_mime_types      = ['image/gif', 'image/jpeg', 'image/png'];
     $allowed_file_extensions = ['gif', 'jpg', 'jpeg', 'png'];
@@ -56,7 +58,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if ($isImageValid) {
-        // Assign values from form data
         $productName = $_POST['product_name'];
         $productDescription = $_POST['product_description']; 
         $productPrice = $_POST['product_price'];
@@ -72,7 +73,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $insertProductStmt->bindParam(':stock_quantity', $stockQuantity);
         $insertProductStmt->bindParam(':category_id', $categoryID);
 
-        // Execute the product insert statement
         if ($insertProductStmt->execute()) {
             $productId = $db->lastInsertId(); // Get the ID of the newly created product
 
@@ -80,9 +80,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPLOAD_ERR_OK) {
                 if (!file_exists($newProductImage)) {
                     move_uploaded_file($temporaryPath, $newProductImage);
+
+                    //resize the file
+                    $image = new \Gumlet\ImageResize($newProductImage);
+                    $image->resizeToWidth(500); 
+                    $image->save($newProductImage);
+
                     $imageData = file_get_contents($newProductImage);
 
-                    // Insert image into the Images table
                     $insertImageQuery = "INSERT INTO Images (product_id, filename, image, upload_time) VALUES (:product_id, :filename, :image, NOW())";
                     $insertImageStmt = $db->prepare($insertImageQuery);
                     $insertImageStmt->bindParam(':product_id', $productId);
@@ -94,14 +99,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
 
-            // 清除会话变量
             unset($_SESSION['product_name']);
             unset($_SESSION['product_description']);
             unset($_SESSION['product_price']);
             unset($_SESSION['stock_quantity']);
             unset($_SESSION['category_id']);
 
-            // 重定向到 admin.php
             header('Location: admin.php');
             exit();
         } else {
@@ -166,7 +169,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <label for="category_id">Category:</label>
         <select name="category_id" id="category_id">
             <?php foreach ($categories as $category): ?>
-                <option value="<?php echo htmlspecialchars($category['category_id']); ?>" <?php if ($category['category_id'] == $product['category_id']) echo 'selected'; ?>>
+                <option value="<?php echo htmlspecialchars($category['category_id']); ?>" <?php if (isset($_SESSION['category_id']) && $category['category_id'] == $_SESSION['category_id']) echo 'selected'; ?>>
                     <?php echo htmlspecialchars($category['category_name']); ?>
                 </option>
             <?php endforeach; ?>

@@ -3,6 +3,8 @@
 
 
 require('connect.php');
+require '/Applications/xampp/htdocs/a/php-image-resize-master/lib/ImageResize.php';
+require '/Applications/xampp/htdocs/a/php-image-resize-master/lib/ImageResizeException.php';
 
 session_start();
 
@@ -11,9 +13,9 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-ini_set('display_errors', 1);
+/* ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+error_reporting(E_ALL); */
 
 $categoryQuery = "SELECT category_id, category_name FROM categories";
 $categoryStmt = $db->prepare($categoryQuery);
@@ -88,6 +90,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             if (!file_exists($newProductImage)) {
                 move_uploaded_file($temporaryPath, $newProductImage);
+
+                $image = new \Gumlet\ImageResize($newProductImage);
+                $image->resizeToWidth(500); // 或者使用其他所需的尺寸
+                $image->save($newProductImage);
+
                 $imageData = file_get_contents($newProductImage);
 
                 $checkImageQuery = "SELECT * FROM Images WHERE product_id = :product_id";
