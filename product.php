@@ -18,8 +18,21 @@ $stmt->execute();
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-
 <h1 id="margin">Our Products</h1>
+<div id="category-filter-container">
+    <h3 id="h3categories">Category Filter</h3>
+    <form action="product.php" method="get">
+        <select name="category_id" onchange="this.form.submit()" id="category-filter">
+            <option value="">All categories</option>
+            <?php foreach ($categories as $category): ?>
+                <option value="<?php echo htmlspecialchars($category['category_id']); ?>" 
+                    <?php if ($categoryID == $category['category_id']) echo 'selected'; ?>>
+                    <?php echo htmlspecialchars($category['category_name']); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </form>
+</div>
 <?php
 foreach ($products as $product) {
     echo "<div class='product'>";

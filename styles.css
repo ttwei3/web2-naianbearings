@@ -277,6 +277,22 @@ tr:nth-child(even) {
     font-weight: bold; 
 }
 
+#category-filter-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px; 
+}
+
+#category-filter {
+    margin-right: 40px; 
+}
+
+#h3categories {
+    margin: 0; 
+}
+
+
 /* Adjust the layout for smaller screens */
 @media screen and (max-width: 768px) {
     .footer-content {

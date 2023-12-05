@@ -15,6 +15,13 @@ $categories = $categoryStmt->fetchAll(PDO::FETCH_ASSOC);
     <title>Naian Bearing</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <link rel="icon" href="./images/page-logo.svg" type="image/x-icon">
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("category-select").addEventListener("change", function() {
+                this.form.submit();
+            });
+        });
+    </script>
 </head>
 <body>
     <header>
@@ -33,7 +40,7 @@ $categories = $categoryStmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="search-bar">
                 <form action="search.php" method="get">
                     <input type="text" name="search_keyword" placeholder="Search our product" value="<?php echo htmlspecialchars($search_keyword); ?>">
-                    <select name="category">
+                    <select name="category" id="category-select">
                         <option value="all" <?php echo ($category_selected == 'all' ? 'selected' : ''); ?>>All Categories</option>
                         <?php foreach ($categories as $category): ?>
                             <option value="<?php echo $category['category_id']; ?>" 

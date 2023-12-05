@@ -92,7 +92,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 move_uploaded_file($temporaryPath, $newProductImage);
 
                 $image = new \Gumlet\ImageResize($newProductImage);
-                $image->resizeToWidth(500); // 或者使用其他所需的尺寸
+                $image->resizeToWidth(500);
                 $image->save($newProductImage);
 
                 $imageData = file_get_contents($newProductImage);
